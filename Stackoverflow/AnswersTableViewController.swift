@@ -20,12 +20,7 @@ class AnswersTableViewController: UITableViewController {
         if let questionId = questionId {
             let url = createAnswersURL(questionId: questionId)
             getData(url: url)
-            
         }
-    }
-
-    func createAnswersURL(questionId: Int) -> String {
-        return "https://api.stackexchange.com/2.2/questions/\(questionId)/answers?order=desc&sort=activity&site=stackoverflow&filter=!9Z(-wzShk"
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -36,11 +31,19 @@ class AnswersTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "answerCell", for: indexPath)
         let index = indexPath.row
         let answer = answers[index]
-        cell.textLabel?.text = answer.title
+        cell.textLabel?.text = answer.owner.displayName
+        let htmlData = Data(answer.body.utf8)
+        if let attributedString = try? NSAttributedString(data: htmlData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil) {
+            cell.detailTextLabel?.attributedText = attributedString
+        }
         
         return cell
     }
 
+    func createAnswersURL(questionId: Int) -> String {
+        return "https://api.stackexchange.com/2.2/questions/\(questionId)/answers?order=desc&sort=activity&site=stackoverflow&filter=!9Z(-wzu0T"
+    }
+    
     func getData(url: String) {
         
         Alamofire.request(url, method: .get, parameters: nil).responseJSON { response in

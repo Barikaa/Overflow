@@ -19,7 +19,12 @@ struct QuestionsResponseModel: Decodable {
 }
 
 struct Answer: Decodable {
-    let title: String
+    let body: String
+    let owner: Owner
+}
+
+struct Owner: Decodable {
+    let displayName: String
 }
 
 struct AnswersResponseModel: Decodable {
